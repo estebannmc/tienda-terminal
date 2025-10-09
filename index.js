@@ -10,7 +10,7 @@ async function getAllProducts() {
     const products = await response.json();
     console.log(products);
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error('Error al obtener los productos:', error);
   }
 }
 
@@ -21,10 +21,10 @@ async function getProductById(id) {
       const product = await response.json();
       console.log(product);
     } else {
-      console.log(`Product with ID ${id} not found.`);
+      console.log(`Producto con ID ${id} no encontrado.`);
     }
   } catch (error) {
-    console.error('Error fetching product:', error);
+    console.error('Error al obtener el producto:', error);
   }
 }
 
@@ -34,7 +34,7 @@ async function createProduct(title, price, category) {
       title,
       price: parseFloat(price),
       category,
-      description: 'Sample description',
+      description: 'Descripción de muestra',
       image: 'https://i.pravatar.cc',
     };
 
@@ -45,9 +45,9 @@ async function createProduct(title, price, category) {
     });
 
     const product = await response.json();
-    console.log('Created Product:', product);
+    console.log('Producto creado:', product);
   } catch (error) {
-    console.error('Error creating product:', error);
+    console.error('Error al crear el producto:', error);
   }
 }
 
@@ -58,12 +58,12 @@ async function deleteProduct(id) {
     });
 
     if (response.ok) {
-      console.log(`Product with ID ${id} deleted.`);
+      console.log(`Producto con ID ${id} eliminado.`);
     } else {
-      console.log(`Failed to delete product with ID ${id}.`);
+      console.log(`Error al eliminar el producto con ID ${id}.`);
     }
   } catch (error) {
-    console.error('Error deleting product:', error);
+    console.error('Error al eliminar el producto:', error);
   }
 }
 
@@ -83,5 +83,5 @@ if (command === 'GET' && resource === 'products') {
   const [id] = args;
   deleteProduct(id);
 } else {
-  console.log('Invalid command or parameters.');
+  console.log('Comando o parámetros no válidos.');
 }
