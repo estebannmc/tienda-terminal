@@ -1,40 +1,16 @@
-import { auth } from '../config/firebase.js';
-import { UserModel } from '../models/user.model.js';
+import jwt from "jsonwebtoken";
 
-export const protect = async (req, res, next) => {
-  let token;
+export const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      // Get token from header
-      token = req.headers.authorization.split(' ')[1];
+  if (!token) return res.status(401).json({ error: "Token requerido" });
 
-      // Verify token
-      const decodedToken = await auth.verifyIdToken(token);
-      const uid = decodedToken.uid;
-
-      // Get user from firestore
-      req.user = await UserModel.findById(uid);
-
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(401);
-      next(new Error('Not authorized, token failed'));
-    }
-  }
-
-  if (!token) {
-    res.status(401);
-    next(new Error('Not authorized, no token'));
-  }
-};
-
-export const admin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
-  } else {
-    res.status(401);
-    next(new Error('Not authorized as an admin'));
+  } catch (err) {
+    return res.status(403).json({ error: "Token inválido o expirado" });
   }
 };
